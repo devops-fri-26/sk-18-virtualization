@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: barter
+      POSTGRES_PASSWORD: barter
+      POSTGRES_DB: barter
+    ports: [127.0.0.1:5432:5432]
+    volumes: 
+      - ./app/backend/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+  redis:
+    image: redis:7
+    ports: ["127.0.0.1:6379:6379"]
