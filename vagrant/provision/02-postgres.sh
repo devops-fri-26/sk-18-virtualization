@@ -22,4 +22,4 @@ if ! sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='barter
   sudo -u postgres createdb -O barter barter
 fi
 
-PGPASSWORD="$DB_PASSWORD" psql -h 127.0.0.1 -U barter -d barter -f /repo/app/backend/db/schema.sql
+PGPASSWORD="$DB_PASSWORD" psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U barter -d barter -f /repo/app/backend/db/schema.sql

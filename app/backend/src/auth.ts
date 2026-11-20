@@ -4,8 +4,8 @@ import crypto from "crypto";
 import { pool } from "./db";
 import { redis } from "./redis";
 
-const TTL = Number(process.env.SESSTION_TTL_SECONDS ?? 86400);
-const sessionKey = (token: string) => 'session:${token}';
+const TTL = Number(process.env.SESSION_TTL_SECONDS ?? 86400);
+const sessionKey = (token: string) => `session:${token}`;
 
 
 // branje uporabnika iz authorizationa prek redisa

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS items(
     id              SERIAL PRIMARY KEY,
     owner_id        INTEGER NOT NULL REFERENCES users(id),
     title           TEXT NOT NULL,
-    description     TEXT NOT NULL DEFAULT='',
+    description     TEXT NOT NULL DEFAULT '',
     category        TEXT NOT NULL CHECK (category IN ('oblacila', 'elektronika','knjige','sport','dom')),
     image_path      TEXT,
     status          TEXT NOT NULL DEFAULT 'available' CHECK (status in ('available', 'traded')),
@@ -19,19 +19,19 @@ CREATE TABLE IF NOT EXISTS items(
 
 CREATE TABLE IF NOT EXISTS offers(
     id                  SERIAL  PRIMARY KEY,
-    offered_item_id     INTEGER NOT NULL REFERENCES items(id) ON DELETE CASCADE;
-    requested_item_id   INTEGER NOT NULL REFERENCES items(id) ON DELETE CASCADE;
+    offered_item_id     INTEGER NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+    requested_item_id   INTEGER NOT NULL REFERENCES items(id) ON DELETE CASCADE,
     status              TEXT NOT NULL DEFAULT 'pending' CHECK (status in ('pending', 'accepted', 'rejected')),
     created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
     CHECK (offered_item_id <> requested_item_id)
 );
 
-CREATE IF NOT EXISTS messages(
+CREATE TABLE IF NOT EXISTS messages(
     id                  SERIAL PRIMARY KEY,
     offer_id            INTEGER NOT NULL REFERENCES offers(id) ON DELETE CASCADE,
     sender_id           INTEGER NOT NULL REFERENCES users(id),
     body                TEXT NOT NULL,
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS items_category_idx ON items(category);

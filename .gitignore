@@ -1,2 +1,31 @@
-app\backend\.env
-app\backend\node_modules
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+app/backend/.env
+
+# Node.js dependencies and build output
+node_modules/
+dist/
+
+# Vagrant local VM state
+.vagrant/
+
+# Cloud-init generated archives and private keys
+cloud-init/backend.tar.gz
+cloud-init/backend-wrapped.b64
+cloud-init/barterapp-cloudinit-key
+cloud-init/barterapp-cloudinit-key.pub
+
+# Virtual machine images and installation media
+*.vdi
+*.iso
+*.img
+*.qcow2
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
