@@ -10,6 +10,7 @@ const sessionKey = (token: string) => `session:${token}`;
 
 // branje uporabnika iz authorizationa prek redisa
 export async function requireAuth(req: Request, res: Response, next: NextFunction){
+    if((req as any).userId !== undefined) return next();
     const token = req.headers.authorization?.replace("Bearer ", "");
     if(!token) return res.status(401).json({ error: "Manjka žeton" });
     const userId = await redis.get(sessionKey(token));
