@@ -39,3 +39,7 @@ CREATE INDEX IF NOT EXISTS items_owner_idx ON items(owner_id);
 CREATE INDEX IF NOT EXISTS offers_offered_idx ON offers(offered_item_id);
 CREATE INDEX IF NOT EXISTS offers_requested_idx ON offers(requested_item_id);
 CREATE INDEX IF NOT EXISTS messages_offer_idx ON messages(offer_id);
+
+
+-- Za isto ponudbo je lahko samo 1 čakajoč
+CREATE UNIQUE INDEX IF NOT EXISTS offers_pending_unique ON offers(offered_item_id, requested_item_id) WHERE status = 'pending';

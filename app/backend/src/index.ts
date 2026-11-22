@@ -2,7 +2,9 @@ import express, { Request, Response, NextFunction } from "express";
 import { pool } from "./db";
 import { redis } from "./redis";
 import { authRouter, requireAuth } from "./auth";
-
+import { itemsRouter, UPLOAD_DIR } from "./items";
+import { offersRouter } from "./offers";
+import { messagesRouter } from "./messages";
 
 const app = express();
 app.use(express.json());
@@ -20,6 +22,12 @@ app.get("/health", async (_req,res)=>{
 });
 
 app.use("/auth", authRouter);
+app.use("/items", itemsRouter);
+app.use("/offers", offersRouter);
+app.use("/offers", messagesRouter);
+
+// samo za development, na VM uploads mapo servira NGINX, zahtevek do APi ne pride
+app.use("/uploads", express.static(UPLOAD_DIR));
 
 //test avtentikacije, dobimo uporabnikove podatke
 app.get("/me", requireAuth, async (req, res)=>{
