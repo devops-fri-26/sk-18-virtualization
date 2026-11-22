@@ -57,7 +57,7 @@ itemsRouter.get("/", async (req, res) => {
     }
 
     const r = await pool.query(
-        `SELECT i.id, i.title, i.category, i.image_path, i.created_at, u.display_name AS owner_name
+        `SELECT i.id, i.title, i.description, i.category, i.image_path, i.created_at, u.display_name AS owner_name
         FROM items i JOIN users u ON u.id = i.owner_id
         WHERE ${where.join(" AND ")}
         ORDER BY i.created_at DESC`,

@@ -1,0 +1,87 @@
+/* Messaging UI */
+.chat-panel {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fff;
+}
+.chat-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.chat-heading h3 { margin: 0 0 .25rem; }
+.chat-heading p { margin: 0; color: #6b7280; }
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: .75rem;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+.chat-message {
+  max-width: min(85%, 620px);
+  padding: .75rem 1rem;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+.chat-message-mine {
+  align-self: flex-end;
+  background: #e0edff;
+}
+.chat-message-theirs {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+}
+.chat-message-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .5rem;
+  margin-bottom: .35rem;
+  font-size: .8rem;
+}
+.chat-message-meta time { color: #6b7280; }
+.chat-message p { margin: 0; white-space: pre-wrap; }
+.chat-empty { margin: 0; color: #6b7280; text-align: center; }
+.chat-compose {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: .75rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.chat-compose textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.chat-compose button {
+  width: auto;
+  min-width: 8.5rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .chat-compose {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chat-compose button {
+    width: 100%;
+  }
+}
+
+
