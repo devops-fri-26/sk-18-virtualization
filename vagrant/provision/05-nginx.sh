@@ -34,6 +34,8 @@ server {
     ssl_certificate_key /etc/ssl/private/barterapp.key;
     ssl_protocols       TLSv1.2 TLSv1.3;
 
+    client_max_body_size 6m;
+
     server_tokens off;
     add_header X-Content-Type-Options nosniff always;
     add_header X-Frame-Options DENY always;
@@ -43,6 +45,12 @@ server {
 
     location / {
         try_files $uri $uri/ /index.html;
+    }
+
+    location /uploads/ {
+        alias /var/lib/barterapp/uploads/;
+        expires 7d;
+        add_header X-Content-Type-Options nosniff always;
     }
 
     # prijava/registracija: strožja omejitev zahtevkov

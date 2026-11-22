@@ -20,6 +20,10 @@ apt-get install -y nodejs rsync
 #navaden user za API
 id barterapp > /dev/null 2>&1 || useradd --system --no-create-home --shell /usr/bin/nologin barterapp
 
+# mapa za slike: /opt/barterapp ker rsync --delete povozi vse v /opt
+install -d -m 755 /var/lib/barterapp
+install -d -o barterapp -g barterapp -m 755 /var/lib/barterapp/uploads
+
 # kopiranje iz deljene mape, namestitev requirements, prevod
 install -d /opt/barterapp
 rsync -a --delete --exclude node_modules --exclude dist --exclude .env /repo/app/backend/ "$APP_DIR/"
@@ -36,6 +40,7 @@ PORT=3000
 DATABASE_URL=postgres://barter:${DB_PASSWORD}@127.0.0.1:5432/barter
 REDIS_URL=redis://:${REDIS_PASSWORD}@127.0.0.1:6379
 SESSION_TTL_SECONDS=86400
+UPLOAD_DIR=/var/lib/barterapp/uploads
 EOF
 chmod 600 /etc/barterapp/backend.env
 
