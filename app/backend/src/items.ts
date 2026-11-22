@@ -3,7 +3,7 @@ import multer from "multer";
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
-import { pool } from "./db";
+import { pool, isId } from "./db";
 import { requireAuth } from "./auth";
 
 
@@ -79,7 +79,7 @@ itemsRouter.get("/mine", async (req, res) => {
 // podrobnosti izdelka
 itemsRouter.get("/:id", async (req, res) => {
     const id = Number(req.params.id);
-    if(!Number.isInteger(id)) return res.status(400).json({ error: "Neveljaven id" });
+    if(!isId(id)) return res.status(400).json({ error: "Neveljaven id" });
 
     const r = await pool.query(
         `SELECT i.id, i.owner_id, i.title, i.description, i.category, i.image_path, i.status, i.created_at,
@@ -101,16 +101,21 @@ itemsRouter.post("/", handleUpload, async(req, res) => {
         return res.status(400).json({ error: `Neveljavni podatki (kategorija: ${CATEGORIES.join(", ")})`});
     }
 
-    const r = await pool.query("INSERT INTO items (owner_id, title, description, category, image_path) VALUES ( $1, $2, $3, $4, $5) RETURNING *",
-        [(req as any).userId, title.trim(), description.trim(), category, file ? `/uploads/${file.filename}` : null]
-    );
-    res.status(201).json(r.rows[0]);
+    try {
+        const r = await pool.query("INSERT INTO items (owner_id, title, description, category, image_path) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+            [(req as any).userId, title.trim(), description.trim(), category, file ? `/uploads/${file.filename}` : null]
+        );
+        res.status(201).json(r.rows[0]);
+    } catch (e) {
+        if(file) fs.unlink(file.path, () => {}); // izdelek ni nastal, slike ne rabimo
+        throw e;
+    }
 })
 
 // brisanje samo za lastnika in če izdelek ni zamenjan
 itemsRouter.delete("/:id", async (req, res) => {
     const id = Number(req.params.id);
-    if(!Number.isInteger(id)) return res.status(400).json({ error: "Neveljaven ID" });
+    if(!isId(id)) return res.status(400).json({ error: "Neveljaven ID" });
 
     const r = await pool.query(
         "DELETE FROM items WHERE id = $1 AND owner_id = $2 AND status = 'available' RETURNING image_path",

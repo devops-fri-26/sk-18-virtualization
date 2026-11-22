@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { pool } from "./db";
+import { pool, isId } from "./db";
 import { requireAuth } from "./auth";
 
 export const messagesRouter = Router();
@@ -23,7 +23,7 @@ async function getOfferIfParticipant(offerId: number, userId: number){
 messagesRouter.get("/:id/messages", async (req, res) => {
     const offerId = Number(req.params.id);
     const after = req.query.after === undefined ? 0 : Number(req.query.after);
-    if(!Number.isInteger(offerId) || !Number.isInteger(after)){
+    if(!isId(offerId) || !(Number.isInteger(after) && after >= 0 && after <= 2147483647)){
         return res.status(400).json({ error: "Neveljaven id" });
     }
 
@@ -45,8 +45,9 @@ messagesRouter.get("/:id/messages", async (req, res) => {
 messagesRouter.post("/:id/messages", async (req, res) => {
     const offerId = Number(req.params.id);
     const { body } = req.body ?? {};
-    if(!Number.isInteger(offerId)) return res.status(400).json({ error: "Neveljaven id" });
-    if(typeof body !== "string" || !body.trim() || body.length >1000){
+    const text = typeof body === "string" ? body.trim() : "";
+    if(!isId(offerId)) return res.status(400).json({ error: "Neveljaven id" });
+    if(!text || text.length > 1000){
         return res.status(400).json({ error: "Sporočilo mora imeti med 1 in 1000 znakov" });
     }
 
@@ -58,8 +59,13 @@ messagesRouter.post("/:id/messages", async (req, res) => {
     }
 
     const r = await pool.query(
-        "INSERT INTO messages (offer_id, sender_id, body) VALUES ($1, $2, $3) RETURNING id, sender_id, body, created_at",
-        [offerId, userId, body.trim()]
+        `WITH m AS (
+            INSERT INTO messages (offer_id, sender_id, body) VALUES ($1, $2, $3)
+            RETURNING id, sender_id, body, created_at
+        )
+        SELECT m.id, m.sender_id, u.display_name AS sender_name, m.body, m.created_at
+        FROM m JOIN users u ON u.id = m.sender_id`,
+        [offerId, userId, text]
     );
     res.status(201).json(r.rows[0]);
 });

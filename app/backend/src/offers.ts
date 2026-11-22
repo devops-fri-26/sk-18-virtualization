@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { pool } from "./db";
+import { pool, isId } from "./db";
 import { requireAuth } from "./auth";
 
 export const offersRouter = Router();
@@ -8,7 +8,7 @@ offersRouter.use(requireAuth);
 //nova ponudba
 offersRouter.post("/", async (req, res) => {
     const { offeredItemId, requestedItemId }= req.body ?? {};
-    if(!Number.isInteger(offeredItemId) || !Number.isInteger(requestedItemId) || offeredItemId === requestedItemId){
+    if(!isId(offeredItemId) || !isId(requestedItemId) || offeredItemId === requestedItemId){
         return res.status(400).json({ error: "Izbrati morate 2 različna izdelka" });
     }
     const userId = (req as any).userId;
@@ -64,7 +64,7 @@ offersRouter.get("/", async (req, res) => {
 offersRouter.patch("/:id", async (req, res) => {
     const id = Number(req.params.id);
     const { status } = req.body ?? {};
-    if(!Number.isInteger(id) || (status !== "accepted" && status !== "rejected")){
+    if(!isId(id) || (status !== "accepted" && status !== "rejected")){
         return res.status(400).json({ error: "Neveljaven id ali status" });
     }
 
