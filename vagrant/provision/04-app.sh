@@ -18,7 +18,7 @@ fi
 apt-get install -y nodejs rsync
 
 #navaden user za API
-id barterapp > /dev/null 2>&1 || useradd --system --no-create-home --shell /usr/bin/nologin barterapp
+id barterapp > /dev/null 2>&1 || useradd --system --no-create-home --shell /usr/sbin/nologin barterapp
 
 # mapa za slike: /opt/barterapp ker rsync --delete povozi vse v /opt
 install -d -m 755 /var/lib/barterapp
@@ -26,7 +26,7 @@ install -d -o barterapp -g barterapp -m 755 /var/lib/barterapp/uploads
 
 # kopiranje iz deljene mape, namestitev requirements, prevod
 install -d /opt/barterapp
-rsync -a --delete --exclude node_modules --exclude dist --exclude .env /repo/app/backend/ "$APP_DIR/"
+rsync -a --delete --exclude node_modules --exclude dist --exclude uploads --exclude .env /repo/app/backend/ "$APP_DIR/"
 
 cd $APP_DIR
 
