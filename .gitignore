@@ -29,3 +29,5 @@ cloud-init/barterapp-cloudinit-key.pub
 Thumbs.db
 .vscode/
 
+# uploads folder
+uploads/
